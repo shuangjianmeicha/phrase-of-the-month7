@@ -357,6 +357,23 @@
             to { transform: scale(6); opacity: 0; }
         }
 
+        /* 静音模式提示 */
+        .mute-warning {
+            display: none;
+            background: #fff3cd;
+            color: #856404;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            font-size: 0.85rem;
+            text-align: center;
+            border: 1px solid #ffc107;
+        }
+        .mute-warning--show {
+            display: block;
+            animation: fadeInUp 0.4s ease-out;
+        }
+
         .card__footer-note {
             margin-top: 20px;
             padding-top: 16px;
@@ -465,6 +482,11 @@
                     <p class="translation-en">Excuse me, where is the restroom?</p>
                 </div>
 
+                <!-- 静音模式警告 -->
+                <div class="mute-warning" id="muteWarning">
+                    🔊 请关闭手机的静音模式，并将媒体音量调大后重试
+                </div>
+
                 <button class="play-button" id="playButton" aria-label="播放日语发音" title="点击播放日语发音">
                     <span class="play-button__icon" aria-hidden="true">
                         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -483,21 +505,18 @@
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-    <!-- 隐藏的音频元素 -->
-    <audio id="japaneseAudio" preload="auto">
-        <source src="https://translate.google.com/translate_tts?ie=UTF-8&q=%E3%81%99%E3%81%BF%E3%81%BE%E3%81%9B%E3%82%93%E3%80%81%E3%83%88%E3%82%A4%E3%83%AC%E3%81%AF%E3%81%A9%E3%81%93%E3%81%A7%E3%81%99%E3%81%8B%EF%BC%9F&tl=ja&client=tw-ob" type="audio/mpeg">
-    </audio>
-
     <script>
         (function() {
             const playButton = document.getElementById('playButton');
             const playButtonText = document.getElementById('playButtonText');
             const toast = document.getElementById('toast');
-            const audio = document.getElementById('japaneseAudio');
+            const muteWarning = document.getElementById('muteWarning');
             let isPlaying = false;
             let toastTimer = null;
+            let audio = null;
+            let warningTimer = null;
 
-            function showToast(message, duration = 2500) {
+            function showToast(message, duration = 3000) {
                 if (toastTimer) clearTimeout(toastTimer);
                 toast.textContent = message;
                 toast.classList.add('toast--visible');
@@ -505,6 +524,14 @@
                     toast.classList.remove('toast--visible');
                     toastTimer = null;
                 }, duration);
+            }
+
+            function showMuteWarning() {
+                muteWarning.classList.add('mute-warning--show');
+                if (warningTimer) clearTimeout(warningTimer);
+                warningTimer = setTimeout(() => {
+                    muteWarning.classList.remove('mute-warning--show');
+                }, 5000);
             }
 
             function createRipple(event, button) {
@@ -524,43 +551,89 @@
                 isPlaying = false;
                 playButton.classList.remove('play-button--playing');
                 playButtonText.textContent = '播放发音';
+                if (audio) {
+                    audio.pause();
+                    audio = null;
+                }
             }
 
-            function playAudio() {
+            function playAudioFile() {
                 if (isPlaying) {
-                    audio.pause();
-                    audio.currentTime = 0;
                     resetPlayState();
                     return;
                 }
 
-                audio.currentTime = 0;
+                // 创建新的音频对象
+                audio = new Audio();
                 
-                audio.play().then(() => {
+                // 主要音频源：本地MP3文件
+                audio.src = 'sumimasen.mp3';
+                
+                // 备用音频源：Google TTS
+                audio.addEventListener('error', function() {
+                    console.log('本地MP3加载失败，尝试备用方案');
+                    const backupAudio = new Audio('https://translate.google.com/translate_tts?ie=UTF-8&q=%E3%81%99%E3%81%BF%E3%81%BE%E3%81%9B%E3%82%93%E3%80%81%E3%83%88%E3%82%A4%E3%83%AC%E3%81%AF%E3%81%A9%E3%81%93%E3%81%A7%E3%81%99%E3%81%8B%EF%BC%9F&tl=ja&client=tw-ob');
+                    audio = backupAudio;
+                    setupAudioEvents();
+                    attemptPlay();
+                });
+
+                setupAudioEvents();
+                attemptPlay();
+            }
+
+            function setupAudioEvents() {
+                audio.addEventListener('play', () => {
                     isPlaying = true;
                     playButton.classList.add('play-button--playing');
                     playButtonText.textContent = '播放中...';
-                }).catch((error) => {
-                    console.error('音频播放失败:', error);
-                    showToast('⚠️ 播放失败，正在尝试备用方案...');
-                    // 备用方案：尝试用SpeechSynthesis
-                    fallbackSpeech();
+                    muteWarning.classList.remove('mute-warning--show');
                 });
 
-                audio.onended = () => {
+                audio.addEventListener('ended', () => {
                     resetPlayState();
-                };
+                });
 
-                audio.onerror = () => {
+                audio.addEventListener('pause', () => {
+                    if (audio && !audio.ended) {
+                        resetPlayState();
+                    }
+                });
+
+                audio.addEventListener('error', (e) => {
+                    console.error('音频错误:', e);
                     resetPlayState();
-                    showToast('⚠️ 音频加载失败，正在尝试备用方案...');
-                    fallbackSpeech();
-                };
+                    // 尝试最后的备用方案
+                    trySpeechSynthesis();
+                });
             }
 
-            function fallbackSpeech() {
+            function attemptPlay() {
+                const playPromise = audio.play();
+                
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        // 播放成功
+                        console.log('音频播放成功');
+                    }).catch(error => {
+                        console.error('播放失败:', error);
+                        resetPlayState();
+                        
+                        // 检测是否是静音模式导致
+                        if (error.name === 'NotAllowedError') {
+                            showMuteWarning();
+                            showToast('⚠️ 请关闭静音模式并调大音量');
+                        } else {
+                            // 尝试最后的备用方案
+                            trySpeechSynthesis();
+                        }
+                    });
+                }
+            }
+
+            function trySpeechSynthesis() {
                 if (!('speechSynthesis' in window)) {
-                    showToast('⚠️ 您的浏览器不支持语音播放');
+                    showToast('⚠️ 播放失败，请尝试使用Chrome浏览器');
                     return;
                 }
 
@@ -568,37 +641,72 @@
                 utterance.lang = 'ja-JP';
                 utterance.rate = 0.85;
                 utterance.pitch = 1.0;
+                utterance.volume = 1.0;
+
+                const voices = speechSynthesis.getVoices();
+                const japaneseVoice = voices.find(v => v.lang.startsWith('ja'));
+                if (japaneseVoice) {
+                    utterance.voice = japaneseVoice;
+                }
 
                 utterance.onstart = () => {
                     isPlaying = true;
                     playButton.classList.add('play-button--playing');
                     playButtonText.textContent = '播放中...';
+                    muteWarning.classList.remove('mute-warning--show');
                 };
 
                 utterance.onend = () => {
                     resetPlayState();
                 };
 
-                utterance.onerror = () => {
+                utterance.onerror = (event) => {
+                    console.error('语音合成错误:', event);
                     resetPlayState();
-                    showToast('⚠️ 播放失败，请检查手机音量或更换浏览器');
+                    
+                    if (event.error === 'not-allowed') {
+                        showMuteWarning();
+                        showToast('⚠️ 请关闭静音模式并调大音量');
+                    } else {
+                        showToast('⚠️ 播放失败，请检查音量设置');
+                    }
                 };
 
+                speechSynthesis.cancel();
                 speechSynthesis.speak(utterance);
+            }
+
+            // 检测初始音量状态
+            function checkAudioContext() {
+                // 创建一个短暂的音频上下文来检测
+                try {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    if (AudioContext) {
+                        const ctx = new AudioContext();
+                        if (ctx.state === 'suspended') {
+                            // 可能需要用户交互
+                        }
+                        ctx.close();
+                    }
+                } catch (e) {
+                    // 忽略
+                }
             }
 
             playButton.addEventListener('click', function(event) {
                 createRipple(event, this);
-                playAudio();
+                checkAudioContext();
+                playAudioFile();
             });
 
             playButton.addEventListener('keydown', function(event) {
                 if (event.key === ' ' || event.key === 'Enter') {
                     event.preventDefault();
-                    playAudio();
+                    playAudioFile();
                 }
             });
 
+            // 移动端优化
             if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
                 playButton.style.minHeight = '50px';
                 document.body.style.webkitTapHighlightColor = 'transparent';
@@ -606,13 +714,25 @@
 
             // 页面卸载时停止音频
             window.addEventListener('beforeunload', () => {
-                audio.pause();
+                resetPlayState();
                 if ('speechSynthesis' in window) {
                     speechSynthesis.cancel();
                 }
             });
 
-            console.log('✅ 本月短语页面已就绪（音频模式）');
+            // 预加载语音
+            if ('speechSynthesis' in window) {
+                speechSynthesis.getVoices();
+                speechSynthesis.onvoiceschanged = () => {
+                    speechSynthesis.getVoices();
+                };
+            }
+
+            console.log('✅ 本月短语页面已就绪');
+            console.log('📁 主要音频: sumimasen.mp3');
+            console.log('🔄 备用方案1: Google TTS');
+            console.log('🔄 备用方案2: 浏览器语音合成');
+            console.log('📱 支持的设备和浏览器');
         })();
     </script>
 </body>
