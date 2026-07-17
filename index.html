@@ -483,14 +483,19 @@
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+    <!-- 隐藏的音频元素 -->
+    <audio id="japaneseAudio" preload="auto">
+        <source src="https://translate.google.com/translate_tts?ie=UTF-8&q=%E3%81%99%E3%81%BF%E3%81%BE%E3%81%9B%E3%82%93%E3%80%81%E3%83%88%E3%82%A4%E3%83%AC%E3%81%AF%E3%81%A9%E3%81%93%E3%81%A7%E3%81%99%E3%81%8B%EF%BC%9F&tl=ja&client=tw-ob" type="audio/mpeg">
+    </audio>
+
     <script>
         (function() {
             const playButton = document.getElementById('playButton');
             const playButtonText = document.getElementById('playButtonText');
             const toast = document.getElementById('toast');
+            const audio = document.getElementById('japaneseAudio');
             let isPlaying = false;
             let toastTimer = null;
-            const japanesePhrase = 'すみません、トイレはどこですか？';
 
             function showToast(message, duration = 2500) {
                 if (toastTimer) clearTimeout(toastTimer);
@@ -515,66 +520,99 @@
                 ripple.addEventListener('animationend', () => { ripple.remove(); });
             }
 
-            function getBestJapaneseVoice() {
-                const voices = speechSynthesis.getVoices();
-                const japaneseVoices = voices.filter(v => v.lang.startsWith('ja') || v.lang === 'ja-JP');
-                if (japaneseVoices.length > 0) {
-                    const preferred = japaneseVoices.find(v => v.name.includes('Google') || v.name.includes('Kyoko'));
-                    return preferred || japaneseVoices[0];
-                }
-                return voices.find(v => v.lang.includes('ja')) || null;
-            }
-
-            function speakJapanese() {
-                if (isPlaying) { speechSynthesis.cancel(); resetPlayState(); return; }
-                if (!('speechSynthesis' in window)) { showToast('⚠️ 您的浏览器不支持语音播放'); return; }
-                speechSynthesis.cancel();
-                const utterance = new SpeechSynthesisUtterance(japanesePhrase);
-                utterance.lang = 'ja-JP';
-                utterance.rate = 0.85;
-                utterance.pitch = 1.0;
-                utterance.volume = 1.0;
-                const voices = speechSynthesis.getVoices();
-                if (voices.length > 0) {
-                    const bestVoice = getBestJapaneseVoice();
-                    if (bestVoice) utterance.voice = bestVoice;
-                }
-                utterance.onstart = () => {
-                    isPlaying = true;
-                    playButton.classList.add('play-button--playing');
-                    playButtonText.textContent = '播放中...';
-                };
-                utterance.onend = () => { resetPlayState(); };
-                utterance.onerror = (event) => {
-                    resetPlayState();
-                    if (event.error === 'not-allowed' || event.error === 'interrupted') return;
-                    if (event.error === 'language-unavailable') { showToast('⚠️ 未找到日语语音包，请使用Chrome浏览器'); }
-                    else if (event.error !== 'canceled') { showToast('⚠️ 播放出错，请稍后重试'); }
-                };
-                utterance.onpause = () => { resetPlayState(); };
-                speechSynthesis.speak(utterance);
-            }
-
             function resetPlayState() {
                 isPlaying = false;
                 playButton.classList.remove('play-button--playing');
                 playButtonText.textContent = '播放发音';
             }
 
-            playButton.addEventListener('click', function(event) { createRipple(event, this); speakJapanese(); });
-            playButton.addEventListener('keydown', function(event) {
-                if (event.key === ' ' || event.key === 'Enter') { event.preventDefault(); speakJapanese(); }
+            function playAudio() {
+                if (isPlaying) {
+                    audio.pause();
+                    audio.currentTime = 0;
+                    resetPlayState();
+                    return;
+                }
+
+                audio.currentTime = 0;
+                
+                audio.play().then(() => {
+                    isPlaying = true;
+                    playButton.classList.add('play-button--playing');
+                    playButtonText.textContent = '播放中...';
+                }).catch((error) => {
+                    console.error('音频播放失败:', error);
+                    showToast('⚠️ 播放失败，正在尝试备用方案...');
+                    // 备用方案：尝试用SpeechSynthesis
+                    fallbackSpeech();
+                });
+
+                audio.onended = () => {
+                    resetPlayState();
+                };
+
+                audio.onerror = () => {
+                    resetPlayState();
+                    showToast('⚠️ 音频加载失败，正在尝试备用方案...');
+                    fallbackSpeech();
+                };
+            }
+
+            function fallbackSpeech() {
+                if (!('speechSynthesis' in window)) {
+                    showToast('⚠️ 您的浏览器不支持语音播放');
+                    return;
+                }
+
+                const utterance = new SpeechSynthesisUtterance('すみません、トイレはどこですか？');
+                utterance.lang = 'ja-JP';
+                utterance.rate = 0.85;
+                utterance.pitch = 1.0;
+
+                utterance.onstart = () => {
+                    isPlaying = true;
+                    playButton.classList.add('play-button--playing');
+                    playButtonText.textContent = '播放中...';
+                };
+
+                utterance.onend = () => {
+                    resetPlayState();
+                };
+
+                utterance.onerror = () => {
+                    resetPlayState();
+                    showToast('⚠️ 播放失败，请检查手机音量或更换浏览器');
+                };
+
+                speechSynthesis.speak(utterance);
+            }
+
+            playButton.addEventListener('click', function(event) {
+                createRipple(event, this);
+                playAudio();
             });
 
-            if ('speechSynthesis' in window) {
-                speechSynthesis.getVoices();
-                speechSynthesis.onvoiceschanged = () => { speechSynthesis.getVoices(); };
-            }
-            window.addEventListener('beforeunload', () => { if ('speechSynthesis' in window) speechSynthesis.cancel(); });
+            playButton.addEventListener('keydown', function(event) {
+                if (event.key === ' ' || event.key === 'Enter') {
+                    event.preventDefault();
+                    playAudio();
+                }
+            });
+
             if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
                 playButton.style.minHeight = '50px';
                 document.body.style.webkitTapHighlightColor = 'transparent';
             }
+
+            // 页面卸载时停止音频
+            window.addEventListener('beforeunload', () => {
+                audio.pause();
+                if ('speechSynthesis' in window) {
+                    speechSynthesis.cancel();
+                }
+            });
+
+            console.log('✅ 本月短语页面已就绪（音频模式）');
         })();
     </script>
 </body>
