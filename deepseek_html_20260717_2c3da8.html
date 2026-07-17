@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>本月短语｜Phrase of the Month - 日语学习</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎌</text></svg>">
+
+    <style>
+        :root {
+            --bg-start: #fdf6f0;
+            --bg-mid: #f9ece3;
+            --bg-end: #f5e6d8;
+            --card-bg: #ffffff;
+            --text-primary: #2c2416;
+            --text-secondary: #5c5347;
+            --text-tertiary: #8a7e6f;
+            --accent: #c44536;
+            --accent-hover: #a8382b;
+            --accent-light: #fdf0ed;
+            --gold: #b8955c;
+            --gold-light: #f7f0e5;
+            --border-subtle: #e8ddd0;
+            --shadow-card: 0 4px 24px rgba(60, 40, 20, 0.08), 0 1px 3px rgba(60, 40, 20, 0.06);
+            --shadow-card-hover: 0 12px 40px rgba(60, 40, 20, 0.12), 0 3px 8px rgba(60, 40, 20, 0.08);
+            --shadow-button: 0 4px 14px rgba(196, 69, 54, 0.3);
+            --shadow-button-hover: 0 8px 24px rgba(196, 69, 54, 0.45);
+            --radius-card: 24px;
+            --radius-button: 50px;
+            --font-jp: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'Noto Sans JP', 'Meiryo', sans-serif;
+            --font-zh: 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', 'Noto Sans SC', sans-serif;
+            --font-en: 'Inter', 'Segoe UI', 'Helvetica Neue', system-ui, -apple-system, sans-serif;
+            --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(160deg, #fdf6f0 0%, #f9ece3 25%, #f5e2d4 50%, #f9ece3 75%, #fdf6f0 100%);
+            background-attachment: fixed;
+            font-family: var(--font-zh);
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* 背景装饰 - 柔和的圆形光斑 */
+        .bg-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.35;
+            pointer-events: none;
+            z-index: 0;
+            animation: orbFloat 12s ease-in-out infinite;
+        }
+        .bg-orb--1 {
+            width: 320px;
+            height: 320px;
+            background: radial-gradient(circle, rgba(232, 180, 150, 0.55) 0%, transparent 70%);
+            top: -8%;
+            left: -5%;
+            animation-delay: 0s;
+            animation-duration: 14s;
+        }
+        .bg-orb--2 {
+            width: 260px;
+            height: 260px;
+            background: radial-gradient(circle, rgba(200, 160, 130, 0.4) 0%, transparent 70%);
+            bottom: -10%;
+            right: -6%;
+            animation-delay: -4s;
+            animation-duration: 16s;
+        }
+        .bg-orb--3 {
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(210, 175, 145, 0.35) 0%, transparent 70%);
+            top: 50%;
+            left: 55%;
+            animation-delay: -8s;
+            animation-duration: 18s;
+        }
+
+        @keyframes orbFloat {
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+            20% {
+                transform: translate(30px, -25px) scale(1.08);
+            }
+            40% {
+                transform: translate(-18px, 20px) scale(0.94);
+            }
+            60% {
+                transform: translate(22px, 15px) scale(1.05);
+            }
+            80% {
+                transform: translate(-28px, -18px) scale(0.96);
+            }
+        }
+
+        /* 装饰樱花花瓣（纯CSS） */
+        .petal {
+            position: fixed;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.5;
+            animation: petalFall linear infinite;
+        }
+        .petal::before {
+            content: '';
+            display: block;
+            width: 14px;
+            height: 14px;
+            background: #f0c4b8;
+            border-radius: 50% 0 50% 50%;
+            transform: rotate(-30deg);
+        }
+        .petal--1 {
+            top: -5%;
+            left: 8%;
+            animation-duration: 13s;
+            animation-delay: 0s;
+            opacity: 0.4;
+        }
+        .petal--2 {
+            top: -8%;
+            left: 22%;
+            animation-duration: 16s;
+            animation-delay: -3s;
+            opacity: 0.35;
+        }
+        .petal--3 {
+            top: -6%;
+            left: 38%;
+            animation-duration: 14s;
+            animation-delay: -6s;
+            opacity: 0.45;
+        }
+        .petal--4 {
+            top: -10%;
+            left: 55%;
+            animation-duration: 17s;
+            animation-delay: -9s;
+            opacity: 0.3;
+        }
+        .petal--5 {
+            top: -4%;
+            left: 70%;
+            animation-duration: 12s;
+            animation-delay: -2s;
+            opacity: 0.4;
+        }
+        .petal--6 {
+            top: -7%;
+            left: 85%;
+            animation-duration: 15s;
+            animation-delay: -7s;
+            opacity: 0.35;
+        }
+
+        @keyframes petalFall {
+            0% {
+                transform: translateY(-40px) rotate(0deg) translateX(0px);
+                opacity: 0.5;
+            }
+            15% {
+                opacity: 0.6;
+            }
+            30% {
+                transform: translateY(28vh) rotate(120deg) translateX(35px);
+                opacity: 0.5;
+            }
+            50% {
+                transform: translateY(52vh) rotate(240deg) translateX(-20px);
+                opacity: 0.35;
+            }
+            70% {
+                transform: translateY(72vh) rotate(340deg) translateX(30px);
+                opacity: 0.2;
+            }
+            85% {
+                transform: translateY(88vh) rotate(420deg) translateX(-25px);
+                opacity: 0.08;
+            }
+            100% {
+                transform: translateY(105vh) rotate(520deg) translateX(15px);
+                opacity: 0;
+            }
+        }
+
+        /* 主卡片容器 */
+        .main-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 580px;
+        }
+
+        /* 月份标签 */
+        .month-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-subtle);
+            border-radius: 50px;
+            padding: 8px 18px 8px 14px;
+            font-family: var(--font-en);
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent);
+            letter-spacing: 0.03em;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(60, 40, 20, 0.05);
+            animation: fadeInUp 0.6s ease-out;
+        }
+        .month-badge__dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: var(--accent);
+            animation: pulseDot 2s ease-in-out infinite;
+        }
+        @keyframes pulseDot {
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(196, 69, 54, 0.5);
+            }
+            50% {
+                box-shadow: 0 0 0 8px rgba(196, 69, 54, 0);
+            }
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 卡片 */
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius-card);
+            box-shadow: var(--shadow-card);
+            padding: 36px 32px 32px;
+            transition: box-shadow var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.7s ease-out 0.1s both;
+        }
+        .card:hover {
+            box-shadow: var(--shadow-card-hover);
+        }
+
+        /* 卡片顶部装饰线 */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), #d4786a, var(--accent));
+            border-radius: 0 0 4px 4px;
+            opacity: 0.8;
+        }
+
+        /* 短语内容区 */
+        .phrase-section {
+            padding-top: 8px;
+        }
+
+        /* 标题 */
+        .card__title {
+            font-family: var(--font-zh);
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-tertiary);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+        .card__title-en {
+            font-family: var(--font-en);
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: #b0a395;
+            letter-spacing: 0.04em;
+            margin-bottom: 20px;
+        }
+
+        /* 分隔线 */
+        .divider {
+            width: 40px;
+            height: 1px;
+            background: var(--border-subtle);
+            margin: 0 0 20px 0;
+        }
+
+        /* 日语短语 */
+        .phrase-jp {
+            font-family: var(--font-jp);
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            line-height: 1.5;
+            letter-spacing: 0.03em;
+            margin-bottom: 8px;
+            word-break: keep-all;
+            overflow-wrap: break-word;
+        }
+
+        /* 罗马音 */
+        .phrase-romaji {
+            font-family: var(--font-en);
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+            letter-spacing: 0.04em;
+            margin-bottom: 14px;
+            font-style: italic;
+            opacity: 0.85;
+        }
+
+        /* 翻译 */
+        .translation-block {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-bottom: 20px;
+            padding-left: 14px;
+            border-left: 3px solid var(--accent-light);
+        }
+        .translation-zh {
+            font-family: var(--font-zh);
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            letter-spacing: 0.02em;
+        }
+        .translation-en {
+            font-family: var(--font-en);
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+            letter-spacing: 0.02em;
+        }
+
+        /* 语言标签 */
+        .lang-tag {
+            display: inline-block;
+            background: var(--gold-light);
+            color: var(--gold);
+            font-family: var(--font-en);
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+        }
+
+        /* 播放按钮 */
+        .play-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-button);
+            padding: 14px 28px;
+            font-family: var(--font-zh);
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+            transition: all var(--transition-smooth);
+            box-shadow: var(--shadow-button);
+            position: relative;
+            overflow: hidden;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            outline: none;
+        }
+        .play-button:hover {
+            background: var(--accent-hover);
+            box-shadow: var(--shadow-button-hover);
+            transform: translateY(-2px);
+        }
+        .play-button:active {
+            transform: translateY(0);
+            box-shadow: var(--shadow-button);
+            transition: all 0.1s ease;
+        }
+        .play-button:focus-visible {
+            outline: 3px solid rgba(196, 69, 54, 0.4);
+            outline-offset: 3px;
+        }
+        .play-button--playing {
+            background: #2c2416;
+            box-shadow: 0 4px 18px rgba(44, 36, 22, 0.35);
+            animation: playPulse 1.2s ease-in-out infinite;
+        }
+        .play-button--playing:hover {
+            background: #3d3324;
+        }
+        @keyframes playPulse {
+            0%,
+            100% {
+                box-shadow: 0 4px 18px rgba(44, 36, 22, 0.35), 0 0 0 0 rgba(44, 36, 22, 0.3);
+            }
+            50% {
+                box-shadow: 0 4px 18px rgba(44, 36, 22, 0.35), 0 0 0 16px rgba(44, 36, 22, 0);
+            }
+        }
+
+        /* 播放按钮图标 */
+        .play-button__icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+            flex-shrink: 0;
+            transition: transform var(--transition-bounce);
+        }
+        .play-button--playing .play-button__icon {
+            animation: iconBounce 0.5s ease-in-out infinite;
+        }
+        @keyframes iconBounce {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+        }
+        .play-button__icon svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        /* 播放按钮波纹 */
+        .play-button__ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.35);
+            transform: scale(0);
+            animation: ripple 0.7s ease-out forwards;
+            pointer-events: none;
+        }
+        @keyframes ripple {
+            to {
+                transform: scale(6);
+                opacity: 0;
+            }
+        }
+
+        /* 底部提示 */
+        .card__footer-note {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-subtle);
+            text-align: center;
+            font-family: var(--font-zh);
+            font-size: 0.78rem;
+            color: #c5b9a8;
+            letter-spacing: 0.04em;
+            line-height: 1.5;
+        }
+
+        /* Toast 提示 */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: #2c2416;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-family: var(--font-zh);
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.03em;
+            z-index: 100;
+            pointer-events: none;
+            opacity: 0;
+            transition: all var(--transition-smooth);
+            box-shadow: 0 8px 24px rgba(44, 36, 22, 0.3);
+            white-space: nowrap;
+        }
+        .toast--visible {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 620px) {
+            .card {
+                padding: 28px 20px 24px;
+                border-radius: 20px;
+            }
+            .phrase-jp {
+                font-size: 1.6rem;
+                line-height: 1.5;
+            }
+            .phrase-romaji {
+                font-size: 0.9rem;
+            }
+            .translation-zh {
+                font-size: 0.95rem;
+            }
+            .translation-en {
+                font-size: 0.82rem;
+            }
+            .play-button {
+                width: 100%;
+                justify-content: center;
+                padding: 15px 24px;
+                font-size: 1rem;
+            }
+            .card__title {
+                font-size: 0.8rem;
+            }
+            .card__title-en {
+                font-size: 0.7rem;
+            }
+            .month-badge {
+                font-size: 0.75rem;
+                padding: 6px 14px 6px 10px;
+            }
+            .bg-orb--1 {
+                width: 180px;
+                height: 180px;
+                top: -15%;
+            }
+            .bg-orb--2 {
+                width: 150px;
+                height: 150px;
+                bottom: -12%;
+            }
+            .bg-orb--3 {
+                width: 120px;
+                height: 120px;
+            }
+            .petal {
+                display: none;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .card {
+                padding: 22px 16px 20px;
+                border-radius: 16px;
+            }
+            .phrase-jp {
+                font-size: 1.35rem;
+            }
+            .phrase-romaji {
+                font-size: 0.8rem;
+            }
+            .play-button {
+                padding: 13px 20px;
+                font-size: 0.9rem;
+                gap: 8px;
+            }
+            .play-button__icon {
+                width: 18px;
+                height: 18px;
+            }
+            .play-button__icon svg {
+                width: 18px;
+                height: 18px;
+            }
+            .month-badge {
+                font-size: 0.7rem;
+                padding: 5px 12px 5px 8px;
+                gap: 5px;
+            }
+            .month-badge__dot {
+                width: 7px;
+                height: 7px;
+            }
+        }
+
+        /* 打印样式 */
+        @media print {
+            body {
+                background: #fff;
+                padding: 0;
+            }
+            .bg-orb,
+            .petal,
+            .toast {
+                display: none !important;
+            }
+            .card {
+                box-shadow: none;
+                border: 1px solid #ddd;
+                break-inside: avoid;
+                max-width: 100%;
+            }
+            .play-button {
+                background: #555 !important;
+                color: #fff !important;
+                box-shadow: none !important;
+            }
+        }
+
+        /* 减少动画偏好 */
+        @media (prefers-reduced-motion: reduce) {
+            .bg-orb,
+            .petal,
+            .play-button--playing,
+            .play-button__icon {
+                animation: none !important;
+            }
+            .play-button,
+            .card {
+                transition: none !important;
+            }
+            .play-button__ripple {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 背景装饰光斑 -->
+    <div class="bg-orb bg-orb--1" aria-hidden="true"></div>
+    <div class="bg-orb bg-orb--2" aria-hidden="true"></div>
+    <div class="bg-orb bg-orb--3" aria-hidden="true"></div>
+
+    <!-- 樱花花瓣装饰 -->
+    <div class="petal petal--1" aria-hidden="true"></div>
+    <div class="petal petal--2" aria-hidden="true"></div>
+    <div class="petal petal--3" aria-hidden="true"></div>
+    <div class="petal petal--4" aria-hidden="true"></div>
+    <div class="petal petal--5" aria-hidden="true"></div>
+    <div class="petal petal--6" aria-hidden="true"></div>
+
+    <!-- 主容器 -->
+    <main class="main-container" role="main">
+        <!-- 月份标签 -->
+        <div class="month-badge" aria-label="本月短语标识">
+            <span class="month-badge__dot" aria-hidden="true"></span>
+            本月短语&nbsp;｜&nbsp;Phrase of the Month
+        </div>
+
+        <!-- 主卡片 -->
+        <article class="card" aria-labelledby="phrase-heading">
+            <div class="phrase-section">
+                <span class="lang-tag">Japanese｜日语</span>
+                <h2 class="card__title" id="phrase-heading">本月短语｜Phrase of the Month</h2>
+                <div class="divider" aria-hidden="true"></div>
+
+                <!-- 日语原文 -->
+                <p class="phrase-jp" lang="ja">すみません、<br>トイレはどこですか？</p>
+
+                <!-- 罗马音 -->
+                <p class="phrase-romaji" lang="ja-Latn">Sumimasen, toire wa doko desu ka?</p>
+
+                <!-- 翻译 -->
+                <div class="translation-block">
+                    <p class="translation-zh">请问，洗手间在哪里？</p>
+                    <p class="translation-en">Excuse me, where is the restroom?</p>
+                </div>
+
+                <!-- 播放按钮 -->
+                <button
+                class="play-button"
+                id="playButton"
+                aria-label="播放日语发音：すみません、トイレはどこですか？"
+                title="点击播放日语发音"
+                >
+                <span class="play-button__icon" aria-hidden="true">
+                    <!-- 扬声器图标 -->
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M11 5L6 9H2V15H6L11 19V5Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                        <path d="M15.54 8.46C16.4774 9.39764 17.0039 10.6692 17.0039 11.995C17.0039 13.3208 16.4774 14.5924 15.54 15.53" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.75"/>
+                        <path d="M19.07 4.93C21.1766 7.03664 22.3705 9.93681 22.3705 12.995C22.3705 16.0532 21.1766 18.9534 19.07 21.06" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+                    </svg>
+                </span>
+                <span id="playButtonText">播放发音</span>
+            </button>
+        </div>
+
+        <!-- 底部提示 -->
+        <p class="card__footer-note">
+            💡 点击按钮即可收听日语发音
+        </p>
+    </article>
+</main>
+
+<!-- Toast 提示 -->
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+    (function() {
+        const playButton = document.getElementById('playButton');
+        const playButtonText = document.getElementById('playButtonText');
+        const toast = document.getElementById('toast');
+
+        let isPlaying = false;
+        let toastTimer = null;
+
+        const japanesePhrase = 'すみません、トイレはどこですか？';
+
+        function showToast(message, duration = 2500) {
+            if (toastTimer) clearTimeout(toastTimer);
+            toast.textContent = message;
+            toast.classList.add('toast--visible');
+            toastTimer = setTimeout(() => {
+                toast.classList.remove('toast--visible');
+                toastTimer = null;
+            }, duration);
+        }
+
+        function createRipple(event, button) {
+            const ripple = document.createElement('span');
+            ripple.classList.add('play-button__ripple');
+            const rect = button.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            ripple.style.width = size + 'px';
+            ripple.style.height = size + 'px';
+            ripple.style.left = (event.clientX - rect.left - size / 2) + 'px';
+            ripple.style.top = (event.clientY - rect.top - size / 2) + 'px';
+            button.appendChild(ripple);
+            ripple.addEventListener('animationend', () => {
+                ripple.remove();
+            });
+        }
+
+        function getBestJapaneseVoice() {
+            const voices = speechSynthesis.getVoices();
+            const japaneseVoices = voices.filter(voice =>
+                voice.lang.startsWith('ja') || voice.lang === 'ja-JP' || voice.lang === 'ja'
+            );
+            if (japaneseVoices.length > 0) {
+                const preferred = japaneseVoices.find(v =>
+                    v.name.includes('Google') || v.name.includes('Kyoko') || v.name.includes('Otoya')
+                );
+                return preferred || japaneseVoices[0];
+            }
+            const anyJapanese = voices.find(v => v.lang.includes('ja'));
+            return anyJapanese || null;
+        }
+
+        function speakJapanese() {
+            if (isPlaying) {
+                speechSynthesis.cancel();
+                resetPlayState();
+                return;
+            }
+
+            if (!('speechSynthesis' in window)) {
+                showToast('⚠️ 您的浏览器不支持语音播放，请使用Chrome、Edge或Safari');
+                return;
+            }
+
+            speechSynthesis.cancel();
+
+            const utterance = new SpeechSynthesisUtterance(japanesePhrase);
+            utterance.lang = 'ja-JP';
+            utterance.rate = 0.85;
+            utterance.pitch = 1.0;
+            utterance.volume = 1.0;
+
+            const voices = speechSynthesis.getVoices();
+            if (voices.length > 0) {
+                const bestVoice = getBestJapaneseVoice();
+                if (bestVoice) {
+                    utterance.voice = bestVoice;
+                }
+            }
+
+            utterance.onstart = () => {
+                isPlaying = true;
+                playButton.classList.add('play-button--playing');
+                playButtonText.textContent = '播放中...';
+                playButton.setAttribute('aria-label', '正在播放，点击停止');
+            };
+
+            utterance.onend = () => {
+                resetPlayState();
+            };
+
+            utterance.onerror = (event) => {
+                resetPlayState();
+                if (event.error === 'not-allowed' || event.error === 'interrupted') return;
+                if (event.error === 'language-unavailable') {
+                    showToast('⚠️ 未找到日语语音包，请尝试使用Chrome浏览器');
+                } else if (event.error !== 'canceled') {
+                    showToast('⚠️ 播放出错，请稍后重试');
+                }
+            };
+
+            utterance.onpause = () => {
+                resetPlayState();
+            };
+
+            speechSynthesis.speak(utterance);
+        }
+
+        function resetPlayState() {
+            isPlaying = false;
+            playButton.classList.remove('play-button--playing');
+            playButtonText.textContent = '播放发音';
+            playButton.setAttribute('aria-label', '播放日语发音：すみません、トイレはどこですか？');
+        }
+
+        playButton.addEventListener('click', function(event) {
+            createRipple(event, this);
+            speakJapanese();
+        });
+
+        playButton.addEventListener('keydown', function(event) {
+            if (event.key === ' ' || event.key === 'Enter') {
+                event.preventDefault();
+                speakJapanese();
+            }
+        });
+
+        function preloadVoices() {
+            if ('speechSynthesis' in window) {
+                speechSynthesis.getVoices();
+            }
+        }
+        preloadVoices();
+        if ('speechSynthesis' in window) {
+            speechSynthesis.onvoiceschanged = preloadVoices;
+        }
+
+        window.addEventListener('beforeunload', () => {
+            if ('speechSynthesis' in window) {
+                speechSynthesis.cancel();
+            }
+        });
+
+        if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+            playButton.style.minHeight = '50px';
+            document.body.style.webkitTapHighlightColor = 'transparent';
+        }
+
+        console.log('✅ 本月短语页面已就绪');
+    })();
+</script>
+</body>
+</html>
